@@ -1,0 +1,15 @@
+<% if current_user.liking?(artwork) %>
+  <%= form_for(current_user.likes.find_by(artwork_id: artwork.id), html: { method: :delete }) do |f| %>
+    <%= hidden_field_tag :artwork_id, artwork.id %>
+    <%= button_tag( class: "") do %>
+      <%= content_tag :span, artwork.liking_users.count, class: "" %> Unlike
+    <% end %>
+  <% end %>
+<% else %>
+  <%= form_for(current_user.likes.build) do |f| %>
+    <%= hidden_field_tag :artwork_id, artwork.id %>
+    <%= button_tag( class: "") do %>
+      <%= content_tag :span, artwork.liking_users.count, class: "" %> Like
+    <% end %>
+  <% end %>
+<% end %>

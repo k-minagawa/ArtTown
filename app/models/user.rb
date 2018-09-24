@@ -19,4 +19,36 @@ class User < ApplicationRecord
   
   has_many :comments, dependent: :destroy
   
+  def follow(other_user)
+    unless self == other_user
+      self.follows.find_or_create_by(follow_id: other_user.id)
+    end
+  end
+  
+  def unfollow(other_user)
+    follow = self.follows.find_by(follow_id: other_user.id)
+    follow.destroy if follow
+  end
+  
+  def following?(other_user)
+    self.followings.include?(other_user)
+  end
+  
+  def feed_artworks
+    Artwork.where(user_id: self.following_ids + [self.id])
+  end
+  
+  def like(artwork)
+    self.likes.find_or_create_by(artwork_id: artwork.id)
+  end
+  
+  def unlike(artwork)
+    like = self.likes.find_by(artwork_id: artwork.id)
+    like.destroy if like
+  end
+  
+  def liking?(artwork)
+    self.liking_artworks.include?(artwork)
+  end
+  
 end
